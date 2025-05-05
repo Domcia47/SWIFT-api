@@ -1,4 +1,5 @@
-from fastapi import APIRouter, Depends, HTTPException, status
+from fastapi import APIRouter, Depends, HTTPException, status, Request
+from fastapi.params import Body
 from sqlalchemy.orm import Session
 from database import SessionLocal
 from models import SwiftCode
@@ -29,7 +30,7 @@ def get_swift_details(swift_code: str, db: Session = Depends(get_db)):
         "bankName": swift.bankName,
         "countryISO2": swift.countryISO2,
         "countryName": swift.countryName,
-        "isHeadQuarter": is_hq,
+        "isHeadQuarter": swift.isHeadquarter,
         "swiftCode": swift.swiftCode
     }
 
@@ -39,7 +40,7 @@ def get_swift_details(swift_code: str, db: Session = Depends(get_db)):
                     "address": swift.address,
                     "bankName": swift.bankName,
                     "countryISO2": swift.countryISO2,
-                    "isHeadQuarter": is_hq,
+                    "isHeadQuarter": swift.isHeadquarter,
                     "swiftCode": swift.swiftCode
                 }
                 for branch in swift.branches
@@ -75,34 +76,42 @@ def get_swift_codes_by_country(country_iso2: str, db: Session = Depends(get_db))
 
     return data
 
+
 @router.post("/v1/swift-codes")
-def create_swift_code(swift_code: dict, db: Session = Depends(get_db)):
-    # Sprawdź, czy taki kod już istnieje
-    existing = db.query(SwiftCode).filter(SwiftCode.swiftCode == swift_code["swiftCode"]).first()
+def add_swift_code(body: dict = Body(...), db: Session = Depends(get_db)):
+    required_fields = ["address", "bankName", "countryISO2", "countryName", "isHeadquarter", "swiftCode"]
+
+    # Walidacja wymaganych pól
+    for field in required_fields:
+        if field not in body:
+            raise HTTPException(status_code=400, detail=f"Missing required field: {field}")
+
+    # Czy SWIFT już istnieje
+    existing = db.query(SwiftCode).filter(SwiftCode.swiftCode == body["swiftCode"]).first()
     if existing:
         raise HTTPException(status_code=400, detail="SWIFT code already exists")
 
-    if swift_code["isHeadQuarter"]:
-        headquarter_bic = None
-    else:
-        headquarter_bic = swift_code["swiftCode"][:8] + 'XXX'
+    # Ustal headquarter_bic tylko jeśli nie jest HQ
+    headquarter_bic = None
+    if not body["isHeadquarter"]:
+        headquarter_bic = body["swiftCode"][:8] + "XXX"
 
-    new_entry = SwiftCode(
-        swiftCode=swift_code["swiftCode"],
-        address=swift_code["address"],
-        bankName=swift_code["bankName"],
-        countryISO2=swift_code["countryISO2"].upper(),
-        countryName=swift_code["countryName"],
+    new_swift = SwiftCode(
+        swiftCode=body["swiftCode"],
+        address=body["address"],
+        bankName=body["bankName"],
+        countryISO2=body["countryISO2"].upper(),
+        countryName=body["countryName"],
         headquarter_bic=headquarter_bic
     )
 
     try:
-        db.add(new_entry)
+        db.add(new_swift)
         db.commit()
         return {"message": "SWIFT code added successfully"}
     except IntegrityError:
         db.rollback()
-        raise HTTPException(status_code=400, detail="Integrity error while adding SWIFT code")
+        raise HTTPException(status_code=400, detail="Database error while adding SWIFT code")
 
 @router.delete("/v1/swift-codes/{swift_code}")
 def delete_swift_code(swift_code: str, db: Session = Depends(get_db)):

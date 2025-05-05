@@ -18,3 +18,8 @@ class SwiftCode(Base):
     headquarter = relationship("SwiftCode", remote_side=[swiftCode], back_populates="branches")
 
     branches = relationship("SwiftCode", back_populates="headquarter")
+
+
+    @property
+    def isHeadquarter(self):
+        return self.headquarter_bic is None
