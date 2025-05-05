@@ -1,6 +1,6 @@
-from database import engine
-from models import Base
-from parser import parse_swift
+from app.database import engine
+from app.models import Base
+from app.parser import parse_swift
 
 Base.metadata.create_all(bind=engine)
 

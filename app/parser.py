@@ -1,6 +1,6 @@
 import csv
-from database import SessionLocal
-from models import SwiftCode
+from app.database import SessionLocal
+from app.models import SwiftCode
 from pathlib import Path
 
 

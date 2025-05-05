@@ -1,9 +1,9 @@
 from fastapi import APIRouter, Depends, HTTPException, status, Request
 from fastapi.params import Body
 from sqlalchemy.orm import Session
-from database import SessionLocal
-from models import SwiftCode
-from parser import parse_swift
+from app.database import SessionLocal
+from app.models import SwiftCode
+from app.parser import parse_swift
 from sqlalchemy.exc import IntegrityError
 
 
@@ -81,17 +81,14 @@ def get_swift_codes_by_country(country_iso2: str, db: Session = Depends(get_db))
 def add_swift_code(body: dict = Body(...), db: Session = Depends(get_db)):
     required_fields = ["address", "bankName", "countryISO2", "countryName", "isHeadquarter", "swiftCode"]
 
-    # Walidacja wymaganych pól
     for field in required_fields:
         if field not in body:
             raise HTTPException(status_code=400, detail=f"Missing required field: {field}")
 
-    # Czy SWIFT już istnieje
     existing = db.query(SwiftCode).filter(SwiftCode.swiftCode == body["swiftCode"]).first()
     if existing:
         raise HTTPException(status_code=400, detail="SWIFT code already exists")
 
-    # Ustal headquarter_bic tylko jeśli nie jest HQ
     headquarter_bic = None
     if not body["isHeadquarter"]:
         headquarter_bic = body["swiftCode"][:8] + "XXX"
@@ -128,6 +125,7 @@ def delete_swift_code(swift_code: str, db: Session = Depends(get_db)):
 
     return {"message": "SWIFT code deleted successfully."}
 
+'''
 @router.post("/upload_swift_data/")
 def upload_swift_data(file: str, db: Session = Depends(get_db)):
     swift_codes = parse_swift(file)
@@ -135,5 +133,6 @@ def upload_swift_data(file: str, db: Session = Depends(get_db)):
     for swift in swift_codes:
         db.add(swift)
 
-    db.commit()  # Zatwierdzamy zmiany w bazie
-    return {"message": "Dane zostały załadowane do bazy"}
+    db.commit()
+    return {"message": "Data from csv loaded"}
+'''
