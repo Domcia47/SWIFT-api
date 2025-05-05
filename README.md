@@ -43,7 +43,10 @@ The application will be available at `http://localhost:8080/docs`.
 Once the app is running, the API will be accessible under the following endpoints:
 
 * **GET** `/v1/swift-codes/{swift_code}` - Retrieves the details for a SWIFT code.
-* **POST** `/v1/swift-codes` - Adds a new SWIFT code to the database.
+* **GET** ` /v1/swift-codes/country/{countryISO2code}` - Retrieves the details for a specific country.
+* **POST** `/v1/swift-codes` -  Adds new SWIFT code entries to the database for a specific country.
+* **DELETE** `/v1/swift-codes/{swift-code}` - Deletes swift-code data if swiftCode matches the one in the database.
+
 
 ## Directory Structure
 
@@ -88,6 +91,28 @@ curl -X 'POST' \
 curl -X 'GET' \
   'http://127.0.0.1:8080/v1/swift-codes/EXAMPUS1XXX' \
   -H 'accept: application/json'
+```
+
+## Interactive API Documentation
+FastAPI provides an automatic, interactive GUI for testing your API, powered by Swagger UI.
+
+Once the server is running, open your browser and navigate to:
+
+http://localhost:8080/docs
+
+This interface lets you:
+
+* Explore all available endpoints,
+* View request/response formats,
+* Test endpoints directly from the browser.
+
+## Unit Tests
+This project includes a set of unit tests to ensure core functionality works as expected. The tests are located in the tests/ directory and are written using the built-in pytest framework.
+
+To run the tests use:
+
+```bash
+pytest tests/
 ```
 
 ## Testing
