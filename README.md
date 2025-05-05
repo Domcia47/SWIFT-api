@@ -13,17 +13,33 @@ This application allows for storing and managing SWIFT (BIC) codes of banks. Use
 
 ## Installation
 
-**Note:** All commands should be run from the root directory of the repository.
-
 
 ### 1. Clone the repository
 
 ```bash
-git clone <REPOSITORY_URL>
-cd <PROJECT_FOLDER_NAME>
+git clone https://github.com/Domcia47/SWIFT-api
+cd SWIFT-API
 ```
 
+**Note:** All commands below should be run from the root directory of the repository (\SWIFT-API).
+
 ### 2. Install the dependencies
+Create virtual environment:
+
+```bash
+python -m venv venv
+```
+Next for Windows:
+
+```bash
+venv\Scripts\activate
+```
+
+Linux/macOS:
+
+```bash
+source venv/bin/activate
+```
 
 Install all the required packages by running the following command:
 
@@ -56,7 +72,7 @@ Once the app is running, the API will be accessible under the following endpoint
 ```plaintext
 <PROJECT_ROOT>/
 ├── app/
-│   ├── __init__.py
+│   ├── init_db.py    # Initializes sqlite databaes
 │   ├── main.py       # Main application file
 │   ├── router.py     # API endpoint definitions
 │   ├── models.py     # Database models (SQLAlchemy)
@@ -92,7 +108,7 @@ curl -X 'POST' \
 
 ```bash
 curl -X 'GET' \
-  'http://127.0.0.1:8080/v1/swift-codes/EXAMPUS1XXX' \
+  'http://localhost:8080/v1/swift-codes/TPEOPLPWXXX' \
   -H 'accept: application/json'
 ```
 
