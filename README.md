@@ -56,8 +56,12 @@ Once the app is running, the API will be accessible under the following endpoint
 │   ├── models.py     # Database models (SQLAlchemy)
 │   ├── database.py   # Database connection
 │   └── parser.py     # CSV parser
-├── requirements.txt  # Project dependencies list
-└── README.md         # This file
+├── data/
+│   ├── swift.db      # SQLite database
+├── tests/
+│   ├── test_swiftapi.py  # Unit tests
+├── requirements.txt      # Project dependencies list
+└── README.md             # This file
 ```
 
 ## Example Requests
