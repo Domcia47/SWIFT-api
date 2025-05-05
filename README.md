@@ -7,11 +7,14 @@ This application allows for storing and managing SWIFT (BIC) codes of banks. Use
 ## Requirements
 
 * Python 3.8+
-* SQLite (by default, but you can change it to another database)
+* SQLite
 * FastAPI
 * Uvicorn
 
 ## Installation
+
+**Note:** All commands should be run from the root directory of the repository.
+
 
 ### 1. Clone the repository
 
@@ -131,6 +134,5 @@ To test the API, you can use tools such as:
 
 ## Notes
 
-* The database uses SQLite (the file `swift.db`), which is automatically created the first time the application is run.
-* You can customize the database configuration in `database.py`.
+* The database uses SQLite (the file `swift.db`), which was initialized using init_db.py.
 
