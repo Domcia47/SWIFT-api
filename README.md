@@ -7,11 +7,14 @@ This application allows for storing and managing SWIFT (BIC) codes of banks. Use
 ## Requirements
 
 * Python 3.8+
-* SQLite (by default, but you can change it to another database)
+* SQLite
 * FastAPI
 * Uvicorn
 
 ## Installation
+
+**Note:** All commands should be run from the root directory of the repository.
+
 
 ### 1. Clone the repository
 
@@ -33,17 +36,20 @@ pip install -r requirements.txt
 To run the application locally, use the following command:
 
 ```bash
-uvicorn app.main:app --reload --host 127.0.0.1 --port 8080
+uvicorn app.main:app --reload  --port 8080
 ```
 
-The application will be available at `http://127.0.0.1:8080`.
+The application will be available at `http://localhost:8080/docs`.
 
 ### 3. Check the application
 
 Once the app is running, the API will be accessible under the following endpoints:
 
 * **GET** `/v1/swift-codes/{swift_code}` - Retrieves the details for a SWIFT code.
-* **POST** `/v1/swift-codes` - Adds a new SWIFT code to the database.
+* **GET** ` /v1/swift-codes/country/{countryISO2code}` - Retrieves the details for a specific country.
+* **POST** `/v1/swift-codes` -  Adds new SWIFT code entries to the database for a specific country.
+* **DELETE** `/v1/swift-codes/{swift-code}` - Deletes swift-code data if swiftCode matches the one in the database.
+
 
 ## Directory Structure
 
@@ -56,8 +62,12 @@ Once the app is running, the API will be accessible under the following endpoint
 │   ├── models.py     # Database models (SQLAlchemy)
 │   ├── database.py   # Database connection
 │   └── parser.py     # CSV parser
-├── requirements.txt  # Project dependencies list
-└── README.md         # This file
+├── data/
+│   ├── swift.db      # SQLite database
+├── tests/
+│   ├── test_swiftapi.py  # Unit tests
+├── requirements.txt      # Project dependencies list
+└── README.md             # This file
 ```
 
 ## Example Requests
@@ -86,6 +96,28 @@ curl -X 'GET' \
   -H 'accept: application/json'
 ```
 
+## Interactive API Documentation
+FastAPI provides an automatic, interactive GUI for testing your API, powered by Swagger UI.
+
+Once the server is running, open your browser and navigate to:
+
+http://localhost:8080/docs
+
+This interface lets you:
+
+* Explore all available endpoints,
+* View request/response formats,
+* Test endpoints directly from the browser.
+
+## Unit Tests
+This project includes a set of unit tests to ensure core functionality works as expected. The tests are located in the tests/ directory and are written using the built-in pytest framework.
+
+To run the tests use:
+
+```bash
+pytest tests/
+```
+
 ## Testing
 
 To test the API, you can use tools such as:
@@ -102,6 +134,5 @@ To test the API, you can use tools such as:
 
 ## Notes
 
-* The database uses SQLite (the file `swift.db`), which is automatically created the first time the application is run.
-* You can customize the database configuration in `database.py`.
+* The database uses SQLite (the file `swift.db`), which was initialized using init_db.py.
 
