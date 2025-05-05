@@ -33,10 +33,10 @@ pip install -r requirements.txt
 To run the application locally, use the following command:
 
 ```bash
-uvicorn app.main:app --reload --host 127.0.0.1 --port 8080
+uvicorn app.main:app --reload  --port 8080
 ```
 
-The application will be available at `http://127.0.0.1:8080`.
+The application will be available at `http://localhost:8080/docs`.
 
 ### 3. Check the application
 
