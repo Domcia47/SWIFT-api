@@ -1,7 +1,3 @@
-Sure! Here’s the `README.md` file translated into English:
-
----
-
 # SWIFT Code API
 
 ## Description
