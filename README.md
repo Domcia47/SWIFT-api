@@ -41,10 +41,23 @@ Linux/macOS:
 source venv/bin/activate
 ```
 
+lub
+
+```bash
+source venv/Scripts/activate
+```
+
+
 Install all the required packages by running the following command:
 
 ```bash
 pip install -r requirements.txt
+```
+
+## Initialzing the database
+
+```bash
+python -m app.init_db
 ```
 
 ## Running the Application
@@ -55,7 +68,7 @@ To run the application locally, use the following command:
 uvicorn app.main:app --reload  --port 8080
 ```
 
-The application will be available at `http://localhost:8080/docs`.
+The application will be available at `localhost:8080/docs`.
 
 ### 3. Check the application
 
@@ -66,25 +79,18 @@ Once the app is running, the API will be accessible under the following endpoint
 * **POST** `/v1/swift-codes` -  Adds new SWIFT code entries to the database for a specific country.
 * **DELETE** `/v1/swift-codes/{swift-code}` - Deletes swift-code data if swiftCode matches the one in the database.
 
+## Interactive API Documentation
+FastAPI provides an automatic, interactive GUI for testing your API, powered by Swagger UI.
 
-## Directory Structure
+Once the server is running, open your browser and navigate to:
 
-```plaintext
-<PROJECT_ROOT>/
-├── app/
-│   ├── init_db.py    # Initializes sqlite databaes
-│   ├── main.py       # Main application file
-│   ├── router.py     # API endpoint definitions
-│   ├── models.py     # Database models (SQLAlchemy)
-│   ├── database.py   # Database connection
-│   └── parser.py     # CSV parser
-├── data/
-│   ├── swift.db      # SQLite database
-├── tests/
-│   ├── test_swiftapi.py  # Unit tests
-├── requirements.txt      # Project dependencies list
-└── README.md             # This file
-```
+http://localhost:8080/docs
+
+This interface lets you:
+
+* Explore all available endpoints,
+* View request/response formats,
+* Test endpoints directly from the browser.
 
 ## Example Requests
 
@@ -112,18 +118,25 @@ curl -X 'GET' \
   -H 'accept: application/json'
 ```
 
-## Interactive API Documentation
-FastAPI provides an automatic, interactive GUI for testing your API, powered by Swagger UI.
+## Directory Structure
 
-Once the server is running, open your browser and navigate to:
+```plaintext
+<PROJECT_ROOT>/
+├── app/
+│   ├── init_db.py    # Initializes sqlite databaes
+│   ├── main.py       # Main application file
+│   ├── router.py     # API endpoint definitions
+│   ├── models.py     # Database models (SQLAlchemy)
+│   ├── database.py   # Database connection
+│   └── parser.py     # CSV parser
+├── data/
+│   ├── swift.db      # SQLite database
+├── tests/
+│   ├── test_swiftapi.py  # Unit tests
+├── requirements.txt      # Project dependencies list
+└── README.md             # This file
+```
 
-http://localhost:8080/docs
-
-This interface lets you:
-
-* Explore all available endpoints,
-* View request/response formats,
-* Test endpoints directly from the browser.
 
 ## Unit Tests
 This project includes a set of unit tests to ensure core functionality works as expected. The tests are located in the tests/ directory and are written using the built-in pytest framework.
@@ -150,5 +163,5 @@ To test the API, you can use tools such as:
 
 ## Notes
 
-* The database uses SQLite (the file `swift.db`), which was initialized using init_db.py.
+* The database uses SQLite (the file `swift.db`), which is initialized using init_db.py.
 
