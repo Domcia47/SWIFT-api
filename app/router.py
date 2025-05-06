@@ -85,6 +85,15 @@ def add_swift_code(body: dict = Body(...), db: Session = Depends(get_db)):
         if field not in body:
             raise HTTPException(status_code=400, detail=f"Missing required field: {field}")
 
+    if len(body["swiftCode"]) != 11:
+        raise HTTPException(status_code=400, detail="SWIFT code must be exactly 8 characters long")
+
+    is_hq = body["isHeadquarter"]
+    if is_hq and not body["swiftCode"].endswith("XXX"):
+        raise HTTPException(status_code=400, detail="Headquarter SWIFT code must end with 'XXX'")
+    if not is_hq and body["swiftCode"].endswith("XXX"):
+        raise HTTPException(status_code=400, detail="Branch SWIFT code must not end with 'XXX'")
+
     existing = db.query(SwiftCode).filter(SwiftCode.swiftCode == body["swiftCode"]).first()
     if existing:
         raise HTTPException(status_code=400, detail="SWIFT code already exists")
@@ -94,7 +103,7 @@ def add_swift_code(body: dict = Body(...), db: Session = Depends(get_db)):
         headquarter_bic = body["swiftCode"][:8] + "XXX"
 
     new_swift = SwiftCode(
-        swiftCode=body["swiftCode"],
+        swiftCode=body["swiftCode"].upper(),
         address=body["address"],
         bankName=body["bankName"],
         countryISO2=body["countryISO2"].upper(),
